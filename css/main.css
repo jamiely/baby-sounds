@@ -8,6 +8,7 @@
 @import url(http://fonts.googleapis.com/css?family=Signika+Negative);
 .sounds > .sound { display: none }
 #soundboard .touch-sound {
+  cursor: pointer;
   border: 3px #A0C275 double;
   background-color: #51733C;
   width: 150px;
@@ -21,12 +22,20 @@
   -moz-border-radius: 5px;
   border-radius: 5px;
 }
+
+#soundboard .touch-sound:hover {
+  background-color: #A0C275;
+}
+
 #soundboard .language {
   break-before: always;
 }
 #soundboard .touch-sound.lang-chinese {
   background-color: #BF2E39;
   border-color: #DA3D5B;
+}
+#soundboard .touch-sound.lang-chinese:hover {
+  background-color: #DA3D5B;
 }
 *, body {
   font-family: 'Signika Negative', cursive;

@@ -17,8 +17,8 @@ var SoundboardModule = function(root, $) {
       'duck': 'duck (pronounced ah)',
       'banana': 'banana (pronounced geng jieh)',
       'aunt': 'aunt (pronounced ea)',
-      'leg': 'kah',
-      'cat': 'meow'
+      'leg': 'leg (pronounced kah)',
+      'cat': 'cat (pronounced meow)'
     }[fn]) || fn;
   }
 
