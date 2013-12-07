@@ -49,17 +49,12 @@ var SoundboardModule = function(root, $) {
       });
   }
 
-  function soundElementsByLangauge() {
-    var all = $('.sounds > .sound');
-    // better as partition.
-    return {
-      chinese: all.filter(function() {
-        return isChineseSoundElement(this)
-      }),
-      english: all.filter(function() {
-        return !isChineseSoundElement(this);
-      })
-    };
+  function soundElements() {
+    return $('.sounds > .sound');
+  }
+
+  function soundElementLang(soundElement) {
+    return isChineseSoundElement(soundElement) ? 'chinese' : 'english';
   }
 
   function heading(content) {
@@ -67,13 +62,11 @@ var SoundboardModule = function(root, $) {
   }
 
   function embedTouchElements(soundboardEl) {
-    var byLang = soundElementsByLangauge();
-    for(var lang in byLang) {
-      soundboardEl.append(heading(lang))
-      byLang[lang].each(function (_, soundEl) {
-        soundboardEl.append(soundElementToTouchElement($(soundEl)));
-      });
-    }
+    soundElements().each(function (_, soundEl) {
+      var el = soundElementToTouchElement($(soundEl)).
+        addClass("lang-" + soundElementLang(soundEl));
+      soundboardEl.append(el);
+    });
   }
 
   return function() {
