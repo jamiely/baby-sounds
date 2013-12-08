@@ -1,7 +1,7 @@
 var SoundboardModule = function(root, $) {
 
   function stripWav(item) {
-    return item.replace(/\.wav$/, '');
+    return item.replace(/\.mp3$/, '');
   }
 
   function soundElementFilenameWithoutExt(soundElement) {
