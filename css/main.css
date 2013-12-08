@@ -48,3 +48,11 @@
   font-size: small;
 }
 
+@media (max-width: 600px) {
+  #soundboard .touch-sound {
+    width: 100px;
+    height: 60px;
+    line-height: 60px;
+    font-size: 12pt;
+  }
+}
