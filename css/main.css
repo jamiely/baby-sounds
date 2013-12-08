@@ -45,5 +45,6 @@
 }
 .note, .note > * {
   color: #BF2E39;
+  font-size: small;
 }
 
