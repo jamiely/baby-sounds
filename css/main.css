@@ -43,4 +43,7 @@
   color: #F3EFE9;
   background-color: transparent;
 }
+.note, .note > * {
+  color: #BF2E39;
+}
 
