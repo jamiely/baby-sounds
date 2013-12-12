@@ -20,7 +20,8 @@ var SoundboardModule = function(root, $, regexFormat) {
       'banana': 'banana (pronounced geng jieh)',
       'aunt': 'aunt (pronounced ea)',
       'leg': 'leg (pronounced kah)',
-      'cat': 'cat (pronounced meow)'
+      'cat': 'cat (pronounced meow)',
+      'puzzle': 'puzzle (she says "baga")'
     }[fn]) || fn;
   }
 
