@@ -3,7 +3,9 @@ var SoundboardModule = function(root, $, regexFormat) {
   regexFormat = regexFormat || /\.mp3$/;
 
   function stripWav(item) {
-    return item.replace(regexFormat, '');
+    return item.
+        replace(/sounds\//, '').
+        replace(regexFormat, '');
   }
 
   function soundElementFilenameWithoutExt(soundElement) {
