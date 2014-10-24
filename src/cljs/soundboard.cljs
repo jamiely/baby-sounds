@@ -11,6 +11,10 @@
 
 (defrecord Sound [el])
 
+(defn copy-sound [sound]
+  (let [copy (-> sound :el $ (.clone true) (.appendTo "body"))]
+    (Sound. copy)))
+
 (defn audio-element [sound] 
   (-> ($ (:el sound)) (.children "audio") .first $))
 
@@ -19,10 +23,7 @@
 
 (defn play [sound] 
   (let [fp (fn [_ el] 
-             (log (str "currentTime " (.-currentTime el)))
-             ;(set! (.-currentTime el) 0)
              (.load el)
-             (log "Playing")
              (.play el))]
     (-> sound audio-element (.each fp))))
 
@@ -44,14 +45,18 @@
           {sound :sound} b]
       {:sound sound :enum (Loop. (concat bs [b]))})))
 
+(defn copy-beat [{sound :sound}]
+  (Beat. (copy-sound sound)))
+
+(defn copy-loop [{beats :beats}]
+  (Loop. (map copy-beat beats)))
+
 (def loop? #(instance? Loop %))
 
 (defn play-loop [loop]
   (let [{s :sound n :enum} (nextSound loop)]
-    (log s)
     (play s)
     (log (filename s))
-    (log loop)
     (timeout 1000 #(play-loop n))))
 
 
@@ -66,7 +71,8 @@
 
 (def default-sounds (map #(Sound. %)
                          (take 20 (range))))
-(def loop-all (Loop. (map #(Beat. %) all-sounds)))
+(def loop-all (Loop. (map #(Beat. (copy-sound %)) all-sounds)))
+(def loop-all2 (copy-loop loop-all))
 
 ;(def loop-1 (Loop. (->> default-sounds (drop 5) (take 3))))
 ;(def loop-2 (Loop. (->> default-sounds (drop 10) (take 5))))
@@ -80,4 +86,5 @@
 ;(log default-sounds)
 ;(timeout 1000 #(log "hello"))
 (play-loop loop-all)
+(timeout 1000 #(play-loop loop-all2))
 
