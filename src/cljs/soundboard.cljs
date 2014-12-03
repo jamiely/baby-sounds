@@ -122,6 +122,9 @@
   (defn refresh-sortables []
     (-> (sortables) (.sortable "refresh")))
 
+  (defn cancel-button []
+    (-> "<div>X</div>" $ (.addClass "delete")))
+
   (defn on-drop [event ui]
     ;(prevent event)
     ;(stop event)
@@ -134,14 +137,18 @@
       (if (-> p (.is ".loop"))
         (log "parent is loop so don't do anything")
         (let [h (-> ui .-helper $ .clone 
-                  (.removeAttr "style") (.removeClass "draggable"))]
+                  (.removeAttr "style") (.removeClass "draggable")
+                  (.removeClass "drag-helper")
+                  (.append (cancel-button)))]
           (-> t (.append h))))))
 
   ;(.log js/console (.-draggable ($ ".touch-sound")))
   (-> ".loop" $ (.droppable #js {:drop on-drop}))
   (-> "#soundboard .touch-sound" $ 
     (.draggable #js {
-                     :helper "clone"
+                     :helper (fn [e] 
+                               (.log js/console e)
+                               (-> e .-target $ .clone (.addClass "drag-helper")))
                      :start (fn []
                               (log "start")
                               (-> ".loop" $ (.addClass "drop-target")))
@@ -151,6 +158,12 @@
   (let [s (sortables)]
     (.sortable s)
     (.disableSelection s))
+
+  (defn delete-loop-sound [e]
+    (-> e .-target $ .parent .remove)
+    (.log js/console e))
+
+  (-> js/document $ (.on "click" ".touch-sound > .delete" delete-loop-sound))
 
   ;(on "drop" ".touch-sound-placeholder" handle-drop)
   ;(on-loop "drop" handle-drop)
