@@ -56,7 +56,7 @@
 (defn play-loop [loop]
   (let [{s :sound n :enum} (nextSound loop)]
     (play s)
-    (log (filename s))
+    ;(log (filename s))
     (timeout 1000 #(play-loop n))))
 
 
@@ -74,6 +74,59 @@
 (def loop-all (Loop. (map #(Beat. (copy-sound %)) all-sounds)))
 (def loop-all2 (copy-loop loop-all))
 
+(defn setup-drag-drop []
+  (log "setting up drag and drop")
+  (defn prevent [e]
+    (if (.-preventDefault e)
+      (.preventDefault e)))
+  (defn stop [e]
+    (.stopPropagation e))
+
+  (defn handle-dragover [e]
+    (prevent e)
+    false)
+
+  (defn handle-dragstart [e]
+    (log "drag start")
+    (stop e)
+    (let [dt (-> e .-originalEvent .-dataTransfer)
+          html (-> e .-currentTarget .-outerHTML )]
+      (.log js/console dt)
+      (set! (.-effectAllowed dt) "copy")
+      (.setData dt "text/html" html)
+      (log (str "Set html to " html))))
+
+  (defn handle-drop [e]
+    (log "drop")
+    (log e)
+    (stop e)
+    (let [html (-> e .-originalEvent .-dataTransfer (.getData "text/html"))]
+      (this-as this
+               (-> ($ this) (.append html))))
+    false)
+
+  (defn handle-dragend [e]
+    (stop e)
+    false)
+
+  (defn on [event selector fun]
+    (-> ($ js/document) (.on event selector fun)))
+
+  (defn on-loop [event fun]
+    (on event ".loop" fun))
+
+  (on-loop "drop" handle-drop)
+  (on-loop "dragover" handle-dragover)
+  (on-loop "dragend" handle-dragend)
+  (on "dragstart" ".touch-sound" handle-dragstart))
+
+(defn ready []
+  (setup-drag-drop)
+  (log "ready"))
+
+
+($ ready)
+
 ;(def loop-1 (Loop. (->> default-sounds (drop 5) (take 3))))
 ;(def loop-2 (Loop. (->> default-sounds (drop 10) (take 5))))
 ;(def loop-3 (Loop. (list loop-1 loop-2)))
@@ -85,6 +138,6 @@
 ;(log (map loop? (:beats loop-3)))
 ;(log default-sounds)
 ;(timeout 1000 #(log "hello"))
-(play-loop loop-all)
-(timeout 1000 #(play-loop loop-all2))
+;(play-loop loop-all)
+;(timeout 1000 #(play-loop loop-all2))
 
