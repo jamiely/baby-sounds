@@ -56,10 +56,24 @@
     font-size: 12pt;
   }
 }
-.loop {
+.loop-container {
   background-color: #FF6633;
   color: black;
-  min-height: 200px;
+  padding: 10px;
+}
+.loop {
+  min-height: 100px;
+}
+.loop.drop-target {
+  border: 2px #AAA dotted;
+  background-color: #F96;
+}
+.loop.drop-target:after {
+  content: 'DRAG HERE';
+  display: block;
+  position: relative;
+  line-height: 100px;
+  text-align: center;
 }
 .loop .touch-sound {
   border: 3px #FFF solid;

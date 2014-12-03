@@ -46,7 +46,6 @@ var SoundboardModule = function(root, $, regexFormat) {
     return $('<div />').
       addClass('touch-sound').
       html(pretty(filename)).
-      attr('draggable', true).
       attr('title', title).
       click(function() {
         audioElement.each(function(_, el) {

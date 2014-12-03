@@ -80,45 +80,84 @@
     (if (.-preventDefault e)
       (.preventDefault e)))
   (defn stop [e]
-    (.stopPropagation e))
+    (if (.-stopPropagation e)
+      (.stopPropagation e)))
 
-  (defn handle-dragover [e]
-    (prevent e)
-    false)
+  ;(defn handle-dragover [e]
+    ;(prevent e)
+    ;false)
 
-  (defn handle-dragstart [e]
-    (log "drag start")
-    (stop e)
-    (let [dt (-> e .-originalEvent .-dataTransfer)
-          html (-> e .-currentTarget .-outerHTML )]
-      (.log js/console dt)
-      (set! (.-effectAllowed dt) "copy")
-      (.setData dt "text/html" html)
-      (log (str "Set html to " html))))
+  ;(defn handle-dragstart [e]
+    ;(log "drag start")
+    ;(stop e)
+    ;(let [dt (-> e .-originalEvent .-dataTransfer)
+          ;html (-> e .-currentTarget .-outerHTML )]
+      ;(.log js/console dt)
+      ;(set! (.-effectAllowed dt) "copy")
+      ;(.setData dt "text/html" html)
+      ;(log (str "Set html to " html))))
 
-  (defn handle-drop [e]
-    (log "drop")
-    (log e)
-    (stop e)
-    (let [html (-> e .-originalEvent .-dataTransfer (.getData "text/html"))]
-      (this-as this
-               (-> ($ this) (.append html))))
-    false)
+  ;(defn handle-drop [e]
+    ;(log "drop")
+    ;(log e)
+    ;(stop e)
+    ;(let [html (-> e .-originalEvent .-dataTransfer (.getData "text/html"))]
+      ;(this-as this
+               ;(-> ($ this) (.append html))))
+    ;false)
 
-  (defn handle-dragend [e]
-    (stop e)
-    false)
+  ;(defn handle-dragend [e]
+    ;(stop e)
+    ;false)
 
-  (defn on [event selector fun]
-    (-> ($ js/document) (.on event selector fun)))
+  ;(defn on [event selector fun]
+    ;(-> ($ js/document) (.on event selector fun)))
 
-  (defn on-loop [event fun]
-    (on event ".loop" fun))
+  ;(defn on-loop [event fun]
+    ;(on event ".loop" fun))
 
-  (on-loop "drop" handle-drop)
-  (on-loop "dragover" handle-dragover)
-  (on-loop "dragend" handle-dragend)
-  (on "dragstart" ".touch-sound" handle-dragstart))
+  (defn sortables []
+    (-> ".loop" $))
+
+  (defn refresh-sortables []
+    (-> (sortables) (.sortable "refresh")))
+
+  (defn on-drop [event ui]
+    ;(prevent event)
+    ;(stop event)
+    (.log js/console ui)
+    (.log js/console event)
+    (let [t (-> event .-target $)
+          p (-> ui .-draggable .parent $)]
+      ;(refresh-sortables)
+      (log "on drop")
+      (if (-> p (.is ".loop"))
+        (log "parent is loop so don't do anything")
+        (let [h (-> ui .-helper $ .clone 
+                  (.removeAttr "style") (.removeClass "draggable"))]
+          (-> t (.append h))))))
+
+  ;(.log js/console (.-draggable ($ ".touch-sound")))
+  (-> ".loop" $ (.droppable #js {:drop on-drop}))
+  (-> "#soundboard .touch-sound" $ 
+    (.draggable #js {
+                     :helper "clone"
+                     :start (fn []
+                              (log "start")
+                              (-> ".loop" $ (.addClass "drop-target")))
+                     :stop (fn []
+                             (log "stop")
+                             (-> ".loop" $ (.removeClass "drop-target")))}))
+  (let [s (sortables)]
+    (.sortable s)
+    (.disableSelection s))
+
+  ;(on "drop" ".touch-sound-placeholder" handle-drop)
+  ;(on-loop "drop" handle-drop)
+  ;(on-loop "dragover" handle-dragover)
+  ;(on-loop "dragend" handle-dragend)
+  ;(on "dragstart" ".touch-sound" handle-dragstart)
+  )
 
 (defn ready []
   (setup-drag-drop)
