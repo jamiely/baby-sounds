@@ -38,7 +38,7 @@ var SoundboardModule = function(root, $, regexFormat) {
   }
 
   function soundElementToTouchElement(soundElement) {
-    var audioElement = $(soundElement.children('audio').first());
+    var audioElement = $(soundElement.children('audio').first()).clone().hide();
     var filename = soundElementFilenameWithoutExt(soundElement);
 
     var title = "Click to play " + pretty(trans(filename));
@@ -47,6 +47,7 @@ var SoundboardModule = function(root, $, regexFormat) {
       addClass('touch-sound').
       html(pretty(filename)).
       attr('title', title).
+      append(audioElement).
       click(function() {
         audioElement.each(function(_, el) {
           el.play();

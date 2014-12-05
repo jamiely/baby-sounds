@@ -74,6 +74,13 @@
 (def loop-all (Loop. (map #(Beat. (copy-sound %)) all-sounds)))
 (def loop-all2 (copy-loop loop-all))
 
+(defn loop-from-el [loop-el]
+  (let [els (-> loop-el $ (.children ".touch-sound") .toArray)
+        sounds (map #(Sound. %) els)]
+    sounds))
+
+(defn loop1 [] (loop-from-el ".loop:first"))
+
 (defn setup-drag-drop []
   (log "setting up drag and drop")
   (defn prevent [e]
@@ -140,7 +147,10 @@
                   (.removeAttr "style") (.removeClass "draggable")
                   (.removeClass "drag-helper")
                   (.append (cancel-button)))]
-          (-> t (.append h))))))
+          (-> t (.append h)))))
+    (log "loop1")
+    (log (loop1))
+    (.log js/console (loop1)))
 
   ;(.log js/console (.-draggable ($ ".touch-sound")))
   (-> ".loop" $ (.droppable #js {:drop on-drop}))
@@ -175,7 +185,6 @@
 (defn ready []
   (setup-drag-drop)
   (log "ready"))
-
 
 ($ ready)
 
