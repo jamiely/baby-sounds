@@ -5,6 +5,7 @@
 </head>
 <body>
   <div class="sounds">
+    <div class="sound" data-filename="sounds/silence.mp3"><audio controls><source src="sounds/silence.mp3" type="audio/wav"></audio><p>silence.mp3</p></div>
     <div class="sound" data-filename="sounds/duck.mp3"><audio controls><source src="sounds/duck.mp3" type="audio/wav"></audio><p>duck.mp3</p></div>
     <div class="sound" data-filename="sounds/bababababa.mp3"><audio controls><source src="sounds/bababababa.mp3" type="audio/wav"></audio><p>bababababa.mp3</p></div>
     <div class="sound" data-filename="sounds/puzzle.mp3"><audio controls><source src="sounds/puzzle.mp3" type="audio/wav"></audio><p>puzzle.mp3</p></div>
@@ -36,17 +37,29 @@
     <div class="sound" data-filename="sounds/this_3.mp3"><audio controls><source src="sounds/this_3.mp3" type="audio/wav"></audio><p>this_3.mp3</p></div>
   </div>
 
-  <div class="loop-container">
-    <h2>Loop 1</h2>
-    <div class="loop"></div>
+  <div class="loops-container">
+    <div class="loop-container">
+      <h2>Loop 1</h2>
+      <div class="loop"></div>
+    </div>
+    <div class="loop-container">
+      <h2>Loop 2</h2>
+      <div class="loop"></div>
+    </div>
+    <div class="loop-container">
+      <h2>Loop 3</h2>
+      <div class="loop"></div>
+    </div>
   </div>
 
   <div id="soundboard"></div>
 
   <div class="note">If you have problems with sounds here and are running Firefox, try <a href="index.wav.html">this page</a>.</div>
 
-  <script src="http://code.jquery.com/jquery-1.10.1.js"></script>
-  <script src="https://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
+  <!--<script src="http://code.jquery.com/jquery-1.10.1.js"></script>-->
+  <!--<script src="https://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>-->
+  <script src="scripts/jquery-1.10.1.min.js"></script>
+  <script src="scripts/jquery-ui.min.js"></script>
   <script src="scripts/soundboard.js"></script>
   <script src="scripts/main.js"></script>
   <script src="target/cljsbuild-main.js"></script>

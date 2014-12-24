@@ -29,21 +29,53 @@
 
 (defprotocol SoundEnum
   "Returns the next sound"
-  (nextSound [this] "Returns the next sound and new sound enum"))
+  (next-sound [this] "Returns the next sound and new sound enum"))
 
 (def pause (Sound. nil))
 
 (defrecord Beat [sound]
   SoundEnum
-  (nextSound [this] {:sound sound :enum nil}))
+  (next-sound [this] {:sound sound :enum nil}))
 (def beat? #(instance? Beat %))
 
 (defrecord Loop [beats]
   SoundEnum
-  (nextSound [this]
+  (next-sound [this]
     (let [[b & bs] beats
           {sound :sound} b]
       {:sound sound :enum (Loop. (concat bs [b]))})))
+
+(defn element-sounds
+  "Extracts the sounds from an element"
+  [parent]
+  (let [els (-> parent $ (.children ".touch-sound") .toArray)
+        sounds (map #(Sound. %) els)]
+    sounds))
+
+; "Plays a loop based on a container element, keeping track of the current index"
+(defrecord ElementLoop 
+  [element index]
+  SoundEnum
+  (next-sound [this]
+    (let [sounds (element-sounds element)]
+      (if (empty? sounds)
+        {:sound nil :enum (ElementLoop. element 0)}
+        (let [nth-sound (try 
+                          (nth sounds index)
+                          (catch :default e nil))
+              [sound next-index] (if (nil? nth-sound)
+                                   [nil 0]
+                                   [nth-sound (+ 1 index)])]
+          (.log js/console sounds)
+          (log next-index)
+          {:sound sound :enum (ElementLoop. element next-index)})))))
+
+; we need a loop that can be based on a loop element.
+; when calling next sound, it should check to see if
+; the loop definition is the same. Sameness should be
+; based on the sequence of sound filenames defined in
+; the loop. If the loop detects a change, then it will
+; restart from the beginning.
 
 (defn copy-beat [{sound :sound}]
   (Beat. (copy-sound sound)))
@@ -54,11 +86,14 @@
 (def loop? #(instance? Loop %))
 
 (defn play-loop [loop]
-  (let [{s :sound n :enum} (nextSound loop)]
-    (play s)
-    ;(log (filename s))
-    (timeout 1000 #(play-loop n))))
-
+  (if (nil? loop)
+    (log "Loop is nil")
+    (let [{s :sound n :enum} (next-sound loop)]
+      (if (nil? s)
+        (log "No sound available")
+        (play s))
+      ;(log (filename s))
+      (timeout 1000 #(play-loop n)))))
 
 (def all-sounds (->> ($ ".sounds > .sound")
                   .toArray
@@ -74,12 +109,7 @@
 (def loop-all (Loop. (map #(Beat. (copy-sound %)) all-sounds)))
 (def loop-all2 (copy-loop loop-all))
 
-(defn loop-from-el [loop-el]
-  (let [els (-> loop-el $ (.children ".touch-sound") .toArray)
-        sounds (map #(Sound. %) els)]
-    sounds))
-
-(defn loop1 [] (loop-from-el ".loop:first"))
+(defn loop1 [] (ElementLoop. ".loop:first" 0))
 
 (defn setup-drag-drop []
   (log "setting up drag and drop")
@@ -89,39 +119,6 @@
   (defn stop [e]
     (if (.-stopPropagation e)
       (.stopPropagation e)))
-
-  ;(defn handle-dragover [e]
-    ;(prevent e)
-    ;false)
-
-  ;(defn handle-dragstart [e]
-    ;(log "drag start")
-    ;(stop e)
-    ;(let [dt (-> e .-originalEvent .-dataTransfer)
-          ;html (-> e .-currentTarget .-outerHTML )]
-      ;(.log js/console dt)
-      ;(set! (.-effectAllowed dt) "copy")
-      ;(.setData dt "text/html" html)
-      ;(log (str "Set html to " html))))
-
-  ;(defn handle-drop [e]
-    ;(log "drop")
-    ;(log e)
-    ;(stop e)
-    ;(let [html (-> e .-originalEvent .-dataTransfer (.getData "text/html"))]
-      ;(this-as this
-               ;(-> ($ this) (.append html))))
-    ;false)
-
-  ;(defn handle-dragend [e]
-    ;(stop e)
-    ;false)
-
-  ;(defn on [event selector fun]
-    ;(-> ($ js/document) (.on event selector fun)))
-
-  ;(defn on-loop [event fun]
-    ;(on event ".loop" fun))
 
   (defn sortables []
     (-> ".loop" $))
@@ -182,9 +179,20 @@
   ;(on "dragstart" ".touch-sound" handle-dragstart)
   )
 
+(defn play-all-element-loops []
+  (doall (map play-loop (all-element-loops))))
+
+(defn all-element-loops []
+  (->> ".loop" $ .toArray (map #(ElementLoop. % 0))))
+
+(defn hide-loop-headers []
+  (->> ".loop-container h2" $ .hide))
+
 (defn ready []
   (setup-drag-drop)
-  (log "ready"))
+  (log "ready")
+  (play-all-element-loops)
+  (hide-loop-headers))
 
 ($ ready)
 

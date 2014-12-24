@@ -114,3 +114,13 @@
   -khtml-user-drag: element;
   -webkit-user-drag: element;
 }
+.loops-container, #soundboard {
+  display: inline-block;
+  width: 48%;
+  vertical-align: top;
+}
+#soundboard {
+  height: 500px;
+  overflow-y: auto;
+}
+
