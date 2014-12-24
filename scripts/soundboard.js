@@ -4,7 +4,7 @@ var SoundboardModule = function(root, $, regexFormat) {
 
   function stripWav(item) {
     return item.
-        replace(/sounds\//, '').
+        replace(/sounds\//i, '').
         replace(regexFormat, '');
   }
 
