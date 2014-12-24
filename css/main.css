@@ -47,6 +47,9 @@
   color: #BF2E39;
   font-size: small;
 }
+#soundboard .year-container-2014 .touch-sound {
+  font-size: 12pt;
+}
 
 @media (max-width: 600px) {
   .touch-sound {

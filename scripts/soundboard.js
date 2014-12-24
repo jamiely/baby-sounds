@@ -9,7 +9,7 @@ var SoundboardModule = function(root, $, regexFormat) {
   }
 
   function soundElementFilenameWithoutExt(soundElement) {
-    return stripWav(soundElement.data('filename')); 
+    return stripWav(soundElement.data('filename')).replace('2014/', '');
   }
 
   function isChineseSoundElement(soundEl) {
@@ -23,18 +23,55 @@ var SoundboardModule = function(root, $, regexFormat) {
       'aunt': 'aunt (pronounced ea)',
       'leg': 'leg (pronounced kah)',
       'cat': 'cat (pronounced meow)',
-      'puzzle': 'puzzle (she says "baga")'
+      'puzzle': 'puzzle (she says "baga")',
+      'baba_sit_here_chinese': 'daddy sit here (pronounced baba jaw here)',
+      'dog_wo_wo': 'dog (she says "wo wo" like "woof woof")',
+      'baaa': 'like a sheep',
+      'fall_down_chinese': 'fell down (pronounced bwah oh)',
+      'fly_chinese': 'fly, as in the insect (pronounced ho seng)',
+      'good_boy_maybe': 'we\'re not sure what this is, but we think it is "good boy"',
+      'im_not_a_baby_im_leona': 'I\'m Not a Baby, I\'m Leona',
+      'milk_chinese': 'milk (pronounced ni ni)',
+      'mommy_sit_chair': 'mommy sit on the chair (pronounced mommy jaw ehn)'
     }[fn]) || fn;
   }
 
   function isChineseFilename(filename) {
-    return ['duck', 'banana', 'aunt', 'leg', 'cat'].indexOf(stripWav(filename)) != -1;
+    return ['duck', 'banana', 'aunt', 'leg', 'cat',
+      'baba_sit_here_chinese', 'catch_mommy_chinese',
+      'dog_wo_wo', 'fall_down_chinese', 'fly_chinese',
+      'milk_chinese', 'mommy_sit_chair'
+    ].indexOf(stripWav(filename)) != -1;
   }
 
   function pretty(str) {
     return str.
+      replace('2014/', '').
       replace(/^\w/, function(a) { return a.toUpperCase(); }).
       replace(/_(\w)/g, function(all, letter){return ' ' + letter.toUpperCase()});
+  }
+
+  function shorten(str) {
+    return str.substr(0, 15);
+  }
+
+  function simplify(fn) {
+    return {
+      'baba_sit_here_chinese': 'baba_sit',
+      'baba_sit_here2': 'baba_sit_here',
+      'catch_mommy_chinese': 'catch_mommy',
+      'cock_a_doodle_doo': 'cock_a_doodle',
+      'dog_wo_wo': 'dog',
+      'duck_english': 'duck',
+      'fall_down_chinese': 'fell_down',
+      'fly_chinese': 'Fly (Insect)',
+      'good_boy_maybe': 'Good boy?',
+      'i_cant_reach_it': 'I Can\'t Reach',
+      'im_not_a_baby_im_leona': 'I\'m Not a Baby',
+      'hurray_i_say_yay': 'Hurray!',
+      'milk_chinese': 'milk',
+      'mommy_sit_chair': 'mommy_sit'
+    }[fn] || fn;
   }
 
   function soundElementToTouchElement(soundElement) {
@@ -45,7 +82,7 @@ var SoundboardModule = function(root, $, regexFormat) {
 
     return $('<div />').
       addClass('touch-sound').
-      html(pretty(filename)).
+      html(shorten(pretty(simplify(filename)))).
       attr('title', title).
       append(audioElement).
       click(function() {
@@ -71,7 +108,16 @@ var SoundboardModule = function(root, $, regexFormat) {
     soundElements().each(function (_, soundEl) {
       var el = soundElementToTouchElement($(soundEl)).
         addClass("lang-" + soundElementLang(soundEl));
-      soundboardEl.append(el);
+      var year = $(soundEl).data('year');
+      if(year) {
+        el.addClass('year-' + year);
+      }
+      // If there is a specific container for the year,
+      // then the elements get put inside there.
+      var appendEl = 
+        soundboardEl.find('.year-container.year-container-' + year) ||
+        soundboardEl;
+      appendEl.append(el);
     });
   }
 
