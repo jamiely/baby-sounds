@@ -32,7 +32,10 @@ var SoundboardModule = function(root, $, regexFormat) {
       'good_boy_maybe': 'we\'re not sure what this is, but we think it is "good boy"',
       'im_not_a_baby_im_leona': 'I\'m Not a Baby, I\'m Leona',
       'milk_chinese': 'milk (pronounced ni ni)',
-      'mommy_sit_chair': 'mommy sit on the chair (pronounced mommy jaw ehn)'
+      'mommy_sit_chair': 'mommy sit on the chair (pronounced mommy jaw ehn)',
+      'mommy_sing_chinese': 'mommy, sing (pronounced mommy chang gaw)',
+      'orange_chinese': 'orange (pronounced ga)',
+      'no_no_no_chinese': 'no, no, no! (pronounced mi mi mi)'
     }[fn]) || fn;
   }
 
@@ -40,7 +43,8 @@ var SoundboardModule = function(root, $, regexFormat) {
     return ['duck', 'banana', 'aunt', 'leg', 'cat',
       'baba_sit_here_chinese', 'catch_mommy_chinese',
       'dog_wo_wo', 'fall_down_chinese', 'fly_chinese',
-      'milk_chinese', 'mommy_sit_chair'
+      'milk_chinese', 'mommy_sit_chair_chinese',
+      'mommy_sing_chinese', 'orange_chinese', 'no_no_no_chinese'
     ].indexOf(stripWav(filename)) != -1;
   }
 
@@ -70,7 +74,21 @@ var SoundboardModule = function(root, $, regexFormat) {
       'im_not_a_baby_im_leona': 'I\'m Not a Baby',
       'hurray_i_say_yay': 'Hurray!',
       'milk_chinese': 'milk',
-      'mommy_sit_chair': 'mommy_sit'
+      'mommy_sit_chair_chinese': 'mommy_sit',
+      'mommy_sing_chinese': 'Mommy, Sing',
+      'orange_chinese': 'Orange',
+      'no_no_no_chinese': 'No No No!',
+      'thats_dog': 'That\'s Dog',
+      'where_are_you': 'Where Are You?',
+      'minni2': 'Minnie B',
+      'minnie': 'Minnie A',
+      'laugh_mama': '(Laugh) Mama A',
+      'laugh_mama2': '(Laugh) Mama B',
+      'no_way': 'No Way A',
+      'no_way1': 'No Way B',
+      'oh_man': 'Oh Man!',
+      'no_more': 'No More A',
+      'no_more1': 'No More B'
     }[fn] || fn;
   }
 
@@ -87,6 +105,7 @@ var SoundboardModule = function(root, $, regexFormat) {
       append(audioElement).
       click(function() {
         audioElement.each(function(_, el) {
+          el.load();
           el.play();
         });
       });
