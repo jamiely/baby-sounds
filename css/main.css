@@ -50,6 +50,22 @@
 #soundboard .year-container-2014 .touch-sound {
   font-size: 12pt;
 }
+.year-container h2, .loops-container h2 {
+  color: #333;
+}
+
+body > h1, body > p {
+  color: #333;
+}
+
+body > h1 {
+  font-size: 22pt;
+}
+
+body > p {
+  font-size: 12pt;
+}
+
 
 @media (max-width: 600px) {
   .touch-sound {
